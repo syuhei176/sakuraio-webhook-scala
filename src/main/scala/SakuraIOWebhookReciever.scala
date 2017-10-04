@@ -1,4 +1,4 @@
-package spinyhi.hello
+package jpn.org.syuhei.sakuraio
 
 import play.api.libs.json._
 
@@ -17,6 +17,7 @@ final case class Connection(is_online: Boolean) extends Payload
 object Channels {
   implicit val jsonFormat = Json.format[Channels]
 }
+
 object Connection {
   implicit val jsonFormat = Json.format[Connection]
 }

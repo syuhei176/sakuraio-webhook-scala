@@ -1,4 +1,4 @@
-name := "SakuraIOWebhook"
+name := "sakuraIOWebhook"
 
 version := "0.0.1"
 

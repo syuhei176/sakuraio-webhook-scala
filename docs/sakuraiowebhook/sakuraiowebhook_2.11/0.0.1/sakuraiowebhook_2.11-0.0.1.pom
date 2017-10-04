@@ -4,9 +4,9 @@
     <groupId>sakuraiowebhook</groupId>
     <artifactId>sakuraiowebhook_2.11</artifactId>
     <packaging>jar</packaging>
-    <description>SakuraIOWebhook</description>
+    <description>sakuraIOWebhook</description>
     <version>0.0.1</version>
-    <name>SakuraIOWebhook</name>
+    <name>sakuraIOWebhook</name>
     <organization>
         <name>sakuraiowebhook</name>
     </organization>
