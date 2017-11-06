@@ -2,21 +2,26 @@ package jpn.org.syuhei.sakuraio
 
 import play.api.libs.json._
 
-case class Channel(channel: Int,
+sealed trait Channel
+final case class ChannelI(channel: Int,
                    `type`: String,
-                   value: String)
+                   value: Int) extends Channel
+final case class ChannelB(channel: Int,
+                   `type`: String,
+                   value: String) extends Channel
 
-object Channel {
-  implicit val jsonFormat = Json.format[Channel]
+
+object ChannelI {
+  implicit val jsonFormat = Json.format[ChannelI]
+}
+
+object ChannelB {
+  implicit val jsonFormat = Json.format[ChannelB]
 }
 
 sealed trait Payload
 final case class Channels(channels: Seq[Channel]) extends Payload
 final case class Connection(is_online: Boolean) extends Payload
-
-object Channels {
-  implicit val jsonFormat = Json.format[Channels]
-}
 
 object Connection {
   implicit val jsonFormat = Json.format[Connection]
@@ -38,16 +43,20 @@ object SakuraIOWebhookReciever {
         val module = (jsonObj \ "module").as[String]
         val payload = (jsonObj \ "payload")
         if(messageType == "channels") {
-          val channelsJsResult = payload.validate[Channels]
-          channelsJsResult match {
-            case s: JsSuccess[Channels] => {
-              val channels: Channels = s.get
-              Option(ResponseBody(channels, module, datetime, messageType))
+          val channelsJsArray = (payload \ "channels").as[JsArray]
+          val channels: Channels = Channels(channelsJsArray.value.map(item => {
+            val jsObj = item.as[JsObject]
+            val channel = (jsObj \ "channel").as[Int]
+            val `type` = (jsObj \ "type").as[String]
+            if(`type` == "b") {
+              ChannelB(channel, "b", (jsObj \ "value").as[String])
+            }else if(`type` == "i") {
+              ChannelI(channel, "i", (jsObj \ "value").as[Int])
+            }else{
+              ChannelI(channel, "i", (jsObj \ "value").as[Int])
             }
-            case e: JsError => {
-              None
-            }
-          }
+          }))
+          Option(ResponseBody(channels, module, datetime, messageType))
         }else if(messageType == "connection") {
           val connectionJsResult = payload.validate[Connection]
           connectionJsResult match {
