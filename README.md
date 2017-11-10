@@ -25,7 +25,7 @@ libraryDependencies += "sakuraiowebhook" % "sakuraiowebhook_2.11" % "0.1.0"
 
 in play framework
 
-```
+```scala
 import jpn.org.syuhei.sakuraio._
 
 

@@ -1,0 +1,81 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>sakuraio-webhook-scala</title>
+    
+    <meta name="description" content="sakura.ioのoutgoing webhookをscalaで受け取る。" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width" />
+
+    <style type="text/css">
+    	.mdcode {
+    		padding: 16px;
+		    background-color: #f6f8fa;
+    	}
+    	.blue {
+    		color: #0000a0
+    	}
+    	.lightblue {
+    		color: #1752ba
+    	}
+    	.green {
+    		color: #008e07
+    	}
+    </style>
+</head>
+<body>
+
+<div>
+
+<h2>How To Install</h2>
+
+<p>modify build.sbt</p>
+
+<p>add repository</p>
+
+<pre class="mdcode">
+resolvers += "sakuraio-webhook-scala Maven Repository on Github" at "https://syuhei176.github.io/sakuraio-webhook-scala"
+</pre>
+
+<p>add dependency</p>
+
+
+<pre class="mdcode">
+libraryDependencies += "sakuraiowebhook" % "sakuraiowebhook_2.11" % "0.1.0"
+</pre>
+
+
+<h2>How To Use</h2>
+
+<p>in play framework</p>
+
+<pre class="mdcode">
+<span class="blue">import</span> <span>jpn.org.syuhei.sakuraio._</span>
+
+
+  <span class="blue">def</span> receive = <span class="green">Action</span> { <span class="blue">implicit</span> request =>
+    SakuraIOWebhookReciever.parseOutgoingWebhook(request.body.asJson) match {
+      case Some(body: ResponseBody) =>
+	      body.payload match {
+	        case Channels(channels) =>
+	          // channel message
+	          channels(0).asInstanceOf[ChannelI]
+	          Ok
+	        case Connection(is_online) =>
+	        	// connection nessage
+	          Ok
+	        case _ =>
+	          Ok
+	      }
+    }
+  }
+</pre>
+
+</div>
+
+ </body>
+</html>
+
+
