@@ -5,7 +5,7 @@ import play.api.libs.json._
 class SakuraIOWebhookRecieverSpec extends FlatSpec with Matchers {
 
   it should "channels b" in {
-    val body = SakuraIOWebhookReciever.parseOutgoingWebhook(Option(Json.obj(
+    val body = SakuraIOWebhookUtil.parseOutgoingWebhook(Option(Json.obj(
       "id" -> "1101231",
       "datetime" -> "2017-09-09T00:51:37.917120079Z",
       "type" -> "channels",
@@ -21,9 +21,9 @@ class SakuraIOWebhookRecieverSpec extends FlatSpec with Matchers {
       )
     )))
     body.get.payload match {
-      case Channels(channels) => {
+      case ChannelsResponse(channels) => {
         channels(0) match {
-          case ChannelB(0, "b", value) => {
+          case ChannelBResponse(0, "b", value) => {
             value should be ("0011223344556677")
           }
         }
@@ -32,7 +32,7 @@ class SakuraIOWebhookRecieverSpec extends FlatSpec with Matchers {
   }
 
   it should "channels i" in {
-    val body = SakuraIOWebhookReciever.parseOutgoingWebhook(Option(Json.obj(
+    val body = SakuraIOWebhookUtil.parseOutgoingWebhook(Option(Json.obj(
       "id" -> "1101231",
       "datetime" -> "2017-09-09T00:51:37.917120079Z",
       "type" -> "channels",
@@ -48,9 +48,9 @@ class SakuraIOWebhookRecieverSpec extends FlatSpec with Matchers {
       )
     )))
     body.get.payload match {
-      case Channels(channels) => {
+      case ChannelsResponse(channels) => {
         channels(0) match {
-          case ChannelI(0, "i", value) => {
+          case ChannelIResponse(0, "i", value) => {
             value should be (5)
           }
         }
@@ -59,7 +59,7 @@ class SakuraIOWebhookRecieverSpec extends FlatSpec with Matchers {
   }
 
   it should "channels b 0 1 2" in {
-    val body = SakuraIOWebhookReciever.parseOutgoingWebhook(Option(Json.obj(
+    val body = SakuraIOWebhookUtil.parseOutgoingWebhook(Option(Json.obj(
       "id" -> "1101231",
       "datetime" -> "2017-09-09T00:51:37.917120079Z",
       "type" -> "channels",
@@ -85,19 +85,19 @@ class SakuraIOWebhookRecieverSpec extends FlatSpec with Matchers {
       )
     )))
     body.get.payload match {
-      case Channels(channels) => {
+      case ChannelsResponse(channels) => {
         channels(0) match {
-          case ChannelB(0, "b", value) => {
+          case ChannelBResponse(0, "b", value) => {
             value should be ("0011223344556677")
           }
         }
         channels(1) match {
-          case ChannelB(1, "b", value) => {
+          case ChannelBResponse(1, "b", value) => {
             value should be ("1111111111111111")
           }
         }
         channels(2) match {
-          case ChannelB(2, "b", value) => {
+          case ChannelBResponse(2, "b", value) => {
             value should be ("2222222222222222")
           }
         }
@@ -106,7 +106,7 @@ class SakuraIOWebhookRecieverSpec extends FlatSpec with Matchers {
   }
 
   it should "connection" in {
-    val body = SakuraIOWebhookReciever.parseOutgoingWebhook(Option(Json.obj(
+    val body = SakuraIOWebhookUtil.parseOutgoingWebhook(Option(Json.obj(
       "id" -> "1101233",
       "datetime" -> "2017-09-09T00:51:37.917120079Z",
       "type" -> "connection",
@@ -116,14 +116,14 @@ class SakuraIOWebhookRecieverSpec extends FlatSpec with Matchers {
       )
     )))
     body.get.payload match {
-      case Connection(is_online) => {
+      case ConnectionResponse(is_online) => {
         is_online should be (true)
       }
     }
   }
 
   it should "unknown" in {
-    SakuraIOWebhookReciever.parseOutgoingWebhook(Option(Json.obj(
+    SakuraIOWebhookUtil.parseOutgoingWebhook(Option(Json.obj(
       "id" -> "1101233",
       "datetime" -> "2017-09-09T00:51:37.917120079Z",
       "type" -> "ping",
